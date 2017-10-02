@@ -16,16 +16,15 @@
 </head>
 <body>
   
-<div class="container">
+<div id="results" class="container">
   <h1>311 Grafitti Requests</h1>
   <p></p> 
-  <div id="template" class = "hidden">
-  <div class="panel panel-default">
+  <div id= "template" class="panel panel-default hidden">
   <div class="panel-heading">Panel Heading</div>
   <div class="panel-body">Panel Content</div>
 </div>
 </div>
-</div>
+
 
 
 <script>
@@ -33,7 +32,16 @@
         
         $.each(response, function(i,v){
             console.log(v);
+            var clone = $("#template").clone().removeClass("hidden").attr("id", v.service_request_number);
+            
+            clone.find(".panel-heading").text(v.service_request_number);
+            $("#results").append(clone);
+            
+            
+            
             $("body").append(v.service_request_number + " " + v.street_address + " " + v.status + "<br>");
+            
+            
             
         });
     });

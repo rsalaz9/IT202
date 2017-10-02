@@ -17,9 +17,11 @@
         padding: 0;
       }
     </style>
+    
   </head>
   <body>
     <div id="map"></div>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
 
       // This example displays a marker at the center of Australia.
@@ -27,21 +29,23 @@
 
       function initMap() {
         
-        var uluru = {lat: -25.363, lng: 131.044};
+        
         
         
         //API call
           $.get("https://data.cityofchicago.org/resource/cdmx-wzbz.json?$limit=100", function(response){
-            
-          var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: uluru
+          
+          var chicago = {lat: parseFloat(response[0].latitude), lng: parseFloat(response[0].longitude)};  
+          
+          var mymap = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: chicago
           
           });
         
           $.each(response, function(i,v){
             
-            var contentString = "<h2>" + v.service_request_number + "</h2><br>" + v.street_address + "<br>" + v.status;
+            var contentString = "<h2>" + v.service_request_number + "</h2><br>" + v.street_address + "</br>" + v.status;
             
             var infowindow = new google.maps.InfoWindow({
               content: contentString
@@ -49,12 +53,12 @@
     
             var marker = new google.maps.Marker({
               position: {lat: parseFloat(v.latitude), lng: parseFloat(v.longitude)},
-              map: map,
+              map: mymap,
               title: 'Uluru (Ayers Rock)'
             });
             
             marker.addListener('click', function() {
-              infowindow.open(map, marker);
+              infowindow.open(mymap, marker);
             });
             
            
