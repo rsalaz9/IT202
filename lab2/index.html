@@ -31,16 +31,12 @@
      $.get("https://data.cityofchicago.org/resource/cdmx-wzbz.json?$limit=100", function(response){
         
         $.each(response, function(i,v){
-            console.log(v);
+            
             var clone = $("#template").clone().removeClass("hidden").attr("id", v.service_request_number);
             
             clone.find(".panel-heading").text(v.service_request_number);
+            clone.find(".panel-body").html(v.street_address +"<br> "+ v.status);
             $("#results").append(clone);
-            
-            
-            
-            $("body").append(v.service_request_number + " " + v.street_address + " " + v.status + "<br>");
-            
             
             
         });
