@@ -5,6 +5,12 @@
     #template {
     display: none;
 }
+    #Completed\ -\ Dup, #Completed {
+      background-color: green;
+    }
+    #Open\ -\ Dup, #Open {
+      background-color: yellow;
+    }
   </style>
   <title>Bootstrap Example</title>
   <meta charset="utf-8">
@@ -20,7 +26,7 @@
   <h1>311 Grafitti Requests</h1>
   <p></p> 
   <div id= "template" class="panel panel-default hidden">
-  <div class="panel-heading">Panel Heading</div>
+  <div class="panel-heading" >Panel Heading</div>
   <div class="panel-body">Panel Content</div>
 </div>
 </div>
@@ -28,19 +34,30 @@
 
 
 <script>
-     $.get("https://data.cityofchicago.org/resource/cdmx-wzbz.json?$limit=100", function(response){
+     $.get("https://data.cityofchicago.org/resource/cdmx-wzbz.json?", function(response){
         
         $.each(response, function(i,v){
+          
+            var string1 = "Dup";
             
             var clone = $("#template").clone().removeClass("hidden").attr("id", v.service_request_number);
             
-            clone.find(".panel-heading").text(v.service_request_number);
+            
+            clone.find(".panel-heading").text(v.service_request_number).attr("id", v.status);
             clone.find(".panel-body").html(v.street_address +"<br> "+ v.status);
+            
+            //if ((clone.find(".panel-body").text(v.status)) == string1){
+              //clone.find(".panel-default").
+            //}
+            
             $("#results").append(clone);
+            
+           
+           });
             
             
         });
-    });
+    //)};
 </script>
 
 
