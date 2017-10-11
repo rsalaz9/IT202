@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+    <title>Chicago Food Inspection</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/4.0/examples/jumbotron/jumbotron.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+    
+        .screen {
+            display:none;
+        }
+        #template {
+            display: none;
+        }
+        #Pass{
+            background-color: green;
+        }
+        #Fail {
+            background-color: red;
+        }
+    </style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#input">Input <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#resultsScreen">Results</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#mapScreen">Map</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+    <div class="container screen" id="input">
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-3">Chicago Food Inspection Search</h1>
+          <div class="form-group" id="divInspectionDate">
+            <label for="inspectionDate1">Inspection Date</label>
+            <input type="date" class="form-control mr-sm-2" id="inspectionDate">
+          </div>
+          
+          <div class="form-group" id="divFacilityType">
+            <label for="FacilityType1">Facility Type</label>
+            <select class="form-control mr-sm-2" id="faciltyType">
+              <option value=""></option>
+            </select>  
+          </div>
+          
+          <div class="form-group" id="divInspectition Result">
+            <label for="InspectionResult1">Inspection Result</label>
+            <select class="form-control mr-sm-2" id="inspectionResult">
+              <option value=""></option>
+            </select>  
+          </div>    
+          
+          <div class="form-group" id="divZip">
+            <label for="zip1">Zip Code</label>
+            <input type="text" class="form-control mr-sm-2" id="zip">
+          </div>
+          
+          <div>
+            <p></p>
+            <a class="btn btn-primary btn-lg" href="#" role="button" id="btnSearch">
+              Search <i class="fa fa-search"></i>
+            </a>
+          </div>
+        </div>
+      </div> <!-- /container -->
+    </div>
+    
+    <div class="container screen" id="resultsScreen">Results will appear when at least one field in input is filled and search button is clicked.
+      <div id="results" class="container">
+        <p></p>
+        <div class="card">
+        <div id= "template" class="card hidden">
+        <div class="card-header" >Card Heading</div>
+        <div class="card-block">Card Content</div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="container screen" id="mapScreen">Map will appear when at least one field in input is filled and search button is clicked.
+        <div style="height:400px" id="map"></div>
+      </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACkxkL_yfHFnuDnysPVRzE4BZim4aGoHQ"></script>-->
+   
+   <!-- Getting Data from City of Chicago Portal and adding it to selectors
+    ================================================== -->
+    <script>
+    
+    $.get("https://data.cityofchicago.org/resource/cwig-ma7x.json?$query=SELECT%20DISTINCT%20facility_type", function (response){
+      
+        $.each(response, function(i,v){
+          $("#faciltyType").append("<option>" + v.facility_type + "</option>");
+    });
+        
+    });
+    
+    $.get("https://data.cityofchicago.org/resource/cwig-ma7x.json?$query=SELECT%20DISTINCT%20results", function (response){
+        $.each(response, function(i,v){
+          $("#inspectionResult").append("<option>" + v.results + "</option>");
+    });
+        
+    }); 
+    </script>
+    
+     <!-- Event Handler that shows map and results 
+    ================================================== -->
+    <script>
+    $("#btnSearch").on("click", function(){
+      
+      var baseURL="https://data.cityofchicago.org/resource/cwig-ma7x.json?";
+      var URL = baseURL;
+      
+      if ($("#zip").val()!=""){
+        URL+= "zip=" + $("#zip").val() + "&";
+      }
+      
+      if ($("#inspectionDate").val()!=""){
+        URL+= "inspection_date=" + $("#inspectionDate").val() + "&";
+      }
+      
+      if ($("#faciltyType").val()!=""){
+        URL+= "facility_type=" + $("#faciltyType").val() + "&";
+      }
+      
+      if ($("#inspectionResult").val()!=""){
+        URL+= "results=" + $("#inspectionResult").val() + "&";
+      }
+      //console.log(URL);
+      
+      $.get(URL, function(response){
+        
+          initMap(response);
+          displayResults(response);
+        
+      });
+      
+    });  // end of click event
+    
+      function initMap(response) {
+
+          
+          var chicago = {lat: parseFloat(response[0].latitude), lng: parseFloat(response[0].longitude)};  
+          
+          $("#mapScreen").show();
+          
+          console.log("before mymap");
+          var mymap = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: chicago
+          });
+        
+          $.each(response, function(i,v){
+            
+            var contentString = "<h2>" + v.facility_type  + "</h2><br>" + v.inspection_date + "</br>" + v.results;
+            
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+    
+            var marker = new google.maps.Marker({
+              position: {lat: parseFloat(v.latitude), lng: parseFloat(v.longitude)},
+              map: mymap,
+              title: 'Uluru (Ayers Rock)'
+            });
+            
+            marker.addListener('click', function() {
+              infowindow.open(mymap, marker);
+            });
+           
+          });
+      
+      };       
+      
+      function displayResults(response) {
+        
+        $.each(response, function(i,v){
+          
+            var string1 = "Dup";
+            
+            var clone = $("#template").clone().removeClass("hidden").attr("id", v.dba_name);
+            
+            clone.find(".card-header").text(v.dba_name).attr("id", v.results);
+            clone.find(".card-block").html(v.inspection_date +"<br> "+ v.facility_type +"<br> "+ v.results);
+           
+            $("#results").append(clone);
+           });
+        };
+
+    </script>
+     <!-- NavBar Manipulating multiple screens
+    ================================================== -->
+    <script>
+      $(document).ready(function(){
+        $(".nav-link").on("click", function(){
+            $(".screen").hide();
+            var target = $(this).attr("href");
+            $(target).show();
+        });
+      });
+    </script>
+
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACkxkL_yfHFnuDnysPVRzE4BZim4aGoHQ">
+    </script>
+    </body>
+</html>
