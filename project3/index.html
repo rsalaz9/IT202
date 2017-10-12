@@ -24,10 +24,22 @@
             display: none;
         }
         #Pass{
-            background-color: green;
+            background-color: #CCFF99;
         }
         #Fail {
-            background-color: red;
+            background-color: #FFCCCC;
+        }
+        #No\ Entry{
+          background-color: rgb(250, 255, 140);
+        }
+        #Not\ Ready{
+          background-color: rgb(250, 255, 140);
+        }
+        #Out\ of\ Business{
+          background-color: rgb(250, 255, 140);
+        }
+        #Business\ Not\ Located{
+          background-color: rgb(250, 255, 140);
         }
     </style>
   </head>
@@ -97,7 +109,9 @@
       </div> <!-- /container -->
     </div>
     
-    <div class="container screen" id="resultsScreen">Results will appear when at least one field in input is filled and search button is clicked.
+    <div class="container screen" id="resultsScreen">
+      <p></p>
+      <h1 id=count1></h1>
       <div id="results" class="container">
         <p></p>
         <div class="card">
@@ -108,7 +122,8 @@
         </div>
       </div>
     </div>
-    <div class="container screen" id="mapScreen">Map will appear when at least one field in input is filled and search button is clicked.
+    <div class="container screen" id="mapScreen">
+      <div>
         <div style="height:400px" id="map"></div>
       </div>
 
@@ -167,6 +182,7 @@
       //console.log(URL);
       
       $.get(URL, function(response){
+          console.log(response);
         
           initMap(response);
           displayResults(response);
@@ -176,19 +192,21 @@
     });  // end of click event
     
       function initMap(response) {
-
+          
+          count=0;
           
           var chicago = {lat: parseFloat(response[0].latitude), lng: parseFloat(response[0].longitude)};  
           
-          $("#mapScreen").show();
+          //$("#mapScreen").show();
+          //console.log("before mymap");
           
-          console.log("before mymap");
           var mymap = new google.maps.Map(document.getElementById('map'), {
           zoom: 10,
           center: chicago
           });
         
           $.each(response, function(i,v){
+            
             
             var contentString = "<h2>" + v.facility_type  + "</h2><br>" + v.inspection_date + "</br>" + v.results;
             
@@ -200,18 +218,20 @@
               position: {lat: parseFloat(v.latitude), lng: parseFloat(v.longitude)},
               map: mymap,
               title: 'Uluru (Ayers Rock)'
+              
             });
             
             marker.addListener('click', function() {
               infowindow.open(mymap, marker);
             });
-           
+            count=count+1;
           });
-      
+        $("#count2").append(count + " Inspections Returned");;
       };       
       
       function displayResults(response) {
         
+        count =0;
         $.each(response, function(i,v){
           
             var string1 = "Dup";
@@ -222,7 +242,9 @@
             clone.find(".card-block").html(v.inspection_date +"<br> "+ v.facility_type +"<br> "+ v.results);
            
             $("#results").append(clone);
+            count=count+1;
            });
+           $("#count1").append(count + " Inspections Returned");
         };
 
     </script>
