@@ -1,0 +1,10 @@
+<script type="text/javascript">
+    
+    $.(document).ready(function(){
+        $.get("https://data.cityofchicago.org/resource/tt4n-kn4t.json?$query=SELECT%20DISTINCT%20department", function(response){
+            $.each(response,function(i,v){
+                $("#depts").append("<option>" + v.department + <"/option");
+            })
+        });
+    })
+</script>

@@ -1,0 +1,163 @@
+<html>
+<head>
+      <style>
+          canvas {background-color: white;}
+      </style>
+    
+ 
+  </head>
+
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <canvas id="game" width="500" height="500"></canvas>
+    
+    <script>
+    
+        // canvas and context reference
+        var c = document.getElementById("game");
+        var ctx = c.getContext("2d");
+
+        // global variables
+        // objects for game, player, harm and bene
+        var xposharm = Math.floor(Math.random()*c.width);
+        var xposbene = Math.floor(Math.random()*c.width);
+        
+        var player={x:c.width/2, y:475, color:"blue", radius:25, shape: "circle"}
+        var harm={x:xposharm, y:0, color:"red", radius:20, shape: "circle"};
+        var bene={x:xposbene, y:0, color:"green", radius:20, shape: "circle"};
+        var score =0;
+        var life=3;
+        
+        function draw () {
+        	// update character position properties
+        	ctx.clearRect(0,0, c.width, c.height);
+        	ctx.font = "30px Arial";
+            ctx.fillText("Score:"+score,10,50);
+            ctx.fillText("Lives:"+life,350,50);
+        	harm.y+=2;
+        	bene.y+=2;
+        	
+        if (areColliding(player,harm)) {
+            harm.y= 0;
+        	harm.x = Math.floor(Math.random()*c.width);
+        	life--;
+        	console.log("hello");
+        }
+        
+        if (areColliding(player,bene)) {
+            bene.y= 0;
+        	bene.x = Math.floor(Math.random()*c.width);
+        	score++;
+        	console.log("hello");
+        }
+        
+        if (gameOver()){
+            ctx.font = "60px Arial";
+            ctx.fillStyle = "red";
+            ctx.fillText("GAME OVER",c.width/4.5, c.height/2);
+            cancelAnimationFrame(draw);
+            return;
+        }
+        
+        if (reachedEdge(harm, 'bottom')) {
+        	harm.y= 0;
+        	harm.x = Math.floor(Math.random()*c.width);
+        }
+        
+        if (reachedEdge(bene, 'bottom')) {
+        	bene.y= 0;
+        	bene.x = Math.floor(Math.random()*c.width);
+        }
+        
+        if (reachedEdge(player, 'right')) {
+        	player.x = c.width;
+        }
+        
+        if (reachedEdge(player, 'left')) {
+        	player.x = 0;
+        }
+        
+        drawCharacter(player);
+        drawCharacter(harm);
+        drawCharacter(bene);
+        
+        requestAnimationFrame(draw);
+        
+        }
+        
+        function drawCharacter (character) {
+            switch (character.shape) {
+            		case 'circle' :
+            			drawCircle(character.x, character.y, character.radius, character.color);
+            			break;
+                    case 'image' :
+                    	//ctx.drawImage(character.img,character.x, character.y);
+                    	break;
+                    default: 
+                    	console.log('character.shape case fell through');	
+            }	
+        }  
+        
+        function drawCircle (x, y, radius, color) {
+        	ctx.beginPath();
+            ctx.arc(x,y,radius,0,2*Math.PI);
+            ctx.fillStyle = color;
+            ctx.fill();
+            
+        }
+        
+        function areColliding(character1,character2) {
+            var colliding = false;
+            var dx = character1.x - character2.x;
+            var dy = character1.y - character2.y;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < (character1.radius + character2.radius)) {
+                console.log("hello");
+                return true;
+            }
+            return colliding;
+        }
+        
+        function reachedEdge(character, edge) {
+        	var oneEdge = false;
+        	if (edge == 'bottom' && character.y > c.height){
+	        	return true;
+        	}
+        	if (edge == 'right' && character.x > c.width){
+	        	return true;
+        	}
+        	if (edge == 'left' && character.x < 0){
+	        	return true;
+        	}
+        	return oneEdge;
+        }
+        
+         function gameOver() {
+            var overGame = false
+        	if (life <= 0){
+        	    return true;
+        	}
+        	return overGame;
+        }
+        
+        $(document).ready(function() {
+            requestAnimationFrame(draw);
+            document.addEventListener('keydown', (event) => {
+                    
+                const keyName = event.key;
+                
+                if (keyName === 'ArrowRight') {
+                    player.x+=5;
+                }
+                if (keyName === 'ArrowLeft') {
+                    player.x-=5;
+                }
+            }, false);
+           
+        	requestAnimationFrame(draw);
+        });
+   </script>
+  </body>
+</html>
+

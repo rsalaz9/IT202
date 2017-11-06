@@ -1,0 +1,45 @@
+<head>
+      <style>
+          canvas {background-color: white;}
+      </style>
+    
+ 
+  </head>
+
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <canvas id="canvas" width="778" height="662"></canvas>
+    
+    <script>
+    
+    
+    
+   // $("#canvas").on("click", function(evt){
+       // console.log(evt);
+        
+        //drawCircle(evt.clientX, evt.clientY);
+        //drawCircle();
+    //});
+    
+    function drawCircle(){
+        var c = document.getElementById("canvas");
+        var ctx = c.getContext("2d");
+        
+        var radius = Math.floor(Math.random()*50);
+        var xpos = Math.floor(Math.random()*c.width);
+        var ypos = Math.floor(Math.random()*c.width);
+        
+        
+        ctx.beginPath();
+        ctx.arc(xpos,ypos,radius,0,2*Math.PI);
+        ctx.stroke();
+        requestAnimationFrame(drawCircle);
+    }
+    requestAnimationFrame(drawCircle);
+    
+   </script>
+   
+    
+  </body>
+</html>

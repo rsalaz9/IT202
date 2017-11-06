@@ -20,9 +20,19 @@
     
   </head>
   <body>
+      
+    <div id= "divSearch">
+    <input type="text" id="zip" placeholder="Zip Code Chicago">
+    <button id= "btnsearch">Search </button> 
+    </div>
+     
     <div id="map"></div>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
+      $("#btnsearch").on("click", initMap);
+      </script>
+    
+    
 
       // This example displays a marker at the center of Australia.
       // When the user clicks the marker, an info window opens.
@@ -33,8 +43,8 @@
         
         
         //API call
-          $.get("https://data.cityofchicago.org/resource/cdmx-wzbz.json?$limit=100", function(response){
-            //console.log(response);
+        var = $(#zipcode).val()
+          $.get("https://data.cityofchicago.org/resource/cdmx-wzbz.json?zip_code=" + , function(response){
           
           var chicago = {lat: parseFloat(response[0].latitude), lng: parseFloat(response[0].longitude)};  
           

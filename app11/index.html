@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>app11</title>
+</head>
+<body>
+    <div>
+        <form>
+            <input type="text" name="displayName"><br>
+            <input type="radio" name="shareLocation" value="FALSE" checked> FALSE<br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>   
+    
+    <script>
+        var db = new Dexie("MyDB");
+        db.version(1).stores({settings: "name, value"});
+        db.on("populate", function() {
+        db.settings.add({name: "displayName", value: "Display Name"});
+        db.settings.add({name: "shareLocationData", value: "false"});
+        db.settings.add({name: "lastAccessed", value: "now"});
+        });
+        db.open();
+        
+        
+    </script>
+</body>
+</html>
+<html>
+    <head>
