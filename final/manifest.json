@@ -1,0 +1,16 @@
+{
+  "name": "Final",
+  "short_name": "Final",
+  "icons": [{
+        "src": "capture.png",
+        "type": "image/png",
+        "sizes": "128x128"
+      }, {
+        "src": "divvy.png",
+        "type": "image/png",
+        "sizes": "152x152"
+      }], 
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone"
+}

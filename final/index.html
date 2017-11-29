@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Divvy Locator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" sizes="192x192" href="https://sustainability.uic.edu/files/2014/01/divvy_arrows-283x300.png">
+  <link rel="shortcut icon" href="https://sustainability.uic.edu/files/2014/01/divvy_arrows-283x300.png">
+  <link rel='manifest' href='./manifest.json'>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/normalize/6.0.0/normalize.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet"
+        href="https://unpkg.com/material-components-web@0.9.1/dist/material-components-web.min.css">
+  <link rel="stylesheet" href="app.css">
+  <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>  
+  
+</head>
+<body class="mdc-typography">
+  <header id="shrine-header"
+        class="mdc-toolbar mdc-toolbar--fixed mdc-theme--text-primary-on-background">
+  <div class="mdc-toolbar__row">
+    <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+      <a id="shrine-nav-icon" class="material-icons mdc-ripple-surface"  
+        href="#" 
+       aria-label="Click to show the navigation menu"
+       aria-controls="shrine-nav-menu"
+       data-mdc-auto-init="MDCRipple"
+       data-mdc-ripple-is-unbounded>menu</a>
+      <h1 id="shrine-logo"          
+          class="mdc-toolbar__title"><span>Divvy</span></h1>
+    </section>
+  </div>
+  </header>
+  <aside id="shrine-nav-menu" class="mdc-temporary-drawer" data-mdc-auto-init="MDCTemporaryDrawer">
+    <nav class="mdc-temporary-drawer__drawer">
+      <header class="mdc-temporary-drawer__header"></header>
+      <nav class="mdc-temporary-drawer__content mdc-list">
+        <a class="mdc-list-item" href="#screen1">Stations</a>
+        <a class="mdc-list-item" href="#screen2">Map</a>
+        <a class="mdc-list-item" href="#screen3">About Page</a>
+      </nav>
+    </nav>
+  </aside>
+  
+  <main id="shrine-products" class="mdc-toolbar-fixed-adjust">
+    <h1>Divvy Station Locator</h1>
+    <div>
+    <p></p>  
+    <p><button class="mdc-button mdc-button--raised" onclick="geoFindMe()" data-demo-no-js>Show my location</button></p>
+    <div id="out"></div>
+    <div>
+      <label for="css-only-text-field-box">Distance Radius From My Location (meters):</label>
+      <div class="mdc-text-field mdc-text-field-box" data-demo-no-auto-js>
+      <input type="text" class="mdc-text-field__input" id="distanceRadius">
+      </div>
+      <p></p>
+      <button class="mdc-button mdc-button--raised" onclick="withinCircle()" data-demo-no-js>Submit</button>
+      <div id="finish"></div>
+    </div>
+    </div>
+  </main>
+  
+  <div class="screen mdc-layout-grid mdc-toolbar-fixed-adjust" id="screen1">
+    <div class="mdc-layout-grid__cell" id="results">
+      <div class="mdc-card demo-card hidden" id="template">
+        <section class="mdc-card__primary">
+          <h1 class="mdc-card__title mdc-card__title--large">Title</h1>
+        </section>
+        <section class="mdc-card__supporting-text">Supporting text goes here</section>
+        <section class="mdc-card__actions">
+          <button id="makeFavorite" class="mdc-button mdc-button--compact mdc-card__action">
+            Save to Favorites
+          </button>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="screen mdc-toolbar-fixed-adjust" id="screen2">
+    <div style="height:550px" id="map"></div>
+  </div>
+  <div class="screen mdc-toolbar-fixed-adjust shrine-products" id="screen3">
+    <div class="demo-theme__text-styles demo-theme--custom-light-bg">
+    <h1>About Page</h1>
+    <p>Welcome to Divvy Station Locator! This page allows you to locate Divvy Stations that are in proximity.</p>
+    <p>
+    The way it works it first gets your geolocation and then you are able to specify a distance radius in meters of
+    Divvy Stations that are within that distance. If you choose not to specify a distance all Divvy Stations will populate 
+    in the "Stations" menu and "Map" menu. If you do specify a distance, only the stations that are within that distance will display
+    in the Stations screen and Map screen. Both in the Stations screen and Map Info Window, real-time status of docks availabe will display
+    for that particular station. Another feature that is added to the Stations screen is that you are able to save a particual station as a favorite.
+    </p>
+    <p>Developed by: Ruby Salazar</p>
+    </div>
+  </div>
+    
+  <script src="https://unpkg.com/material-components-web@0.9.1/dist/material-components-web.min.js">
+  </script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+    mdc.autoInit();
+    document.getElementById('shrine-nav-icon').addEventListener('click', function(evt) {
+      evt.preventDefault();
+      document.getElementById('shrine-nav-menu').MDCTemporaryDrawer.open = true;
+    });
+  </script>
+  <script>
+    $(document).ready(function(){
+        $(".mdc-list-item").on("click", function(){
+            $(".screen").hide();
+            var target = $(this).attr("href");
+            $(target).show();
+        })
+    })
+  </script>
+  
+    <!-- Geolocation
+    ================================================== -->
+  <script>
+  var geolatitude;
+  var geolongitude;
+  function geoFindMe() {
+    var output = document.getElementById("out");
+
+    if (!navigator.geolocation){
+      output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
+      return;
+    }
+
+    function success(position) {
+      geolatitude  = position.coords.latitude;
+      geolongitude = position.coords.longitude;
+
+      output.innerHTML = '<p>Latitude is ' + geolatitude + '° <br>Longitude is ' + geolongitude + '°</p>';
+
+      var img = new Image();
+      img.src = "https://maps.googleapis.com/maps/api/staticmap?center=" + geolatitude + "," + geolongitude + "&zoom=13&size=300x300&sensor=false";
+
+      output.appendChild(img);
+    }
+
+    function error() {
+      output.innerHTML = "Unable to retrieve your location";
+    }
+
+    output.innerHTML = "<p>Locating…</p>";
+
+    navigator.geolocation.getCurrentPosition(success, error);
+  }
+  
+  var URL;
+  
+  function withinCircle() {
+    var output = document.getElementById("finish");
+    var baseURL="https://data.cityofchicago.org/resource/aavc-b2wj.json?$where=within_circle(location,"+ geolatitude + "," + geolongitude + ",";
+    URL = baseURL;
+      
+    if ($("#distanceRadius").val()!=""){
+      URL+= $("#distanceRadius").val() + ")";
+    }
+    else{
+      URL="https://data.cityofchicago.org/resource/aavc-b2wj.json";
+    }
+    map();
+  }
+  
+  // Getting Data from City of Chicago Portal for divvy bike stations 2 different APIs
+    
+  var stationStats=[];
+  function map(){ 
+    $.get(URL, function(response){
+          console.log(response);
+          
+          var stations = response;
+          
+          $.getJSON("https://polar-garden-75406.herokuapp.com/apiPassThru.php?apiEndpoint=https://feeds.divvybikes.com/stations/stations.json", function(response){
+      
+            stationStats =response;
+            initMap(stations, stationStats);
+            displayResults(stations, stationStats);
+    
+          }); 
+    });  
+    
+    
+    function initMap( stations,stationStats) {
+          
+          var chicago = {lat: 41.86, lng: -87.628};  
+          
+          var mymap = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: chicago
+          });
+          
+          $(window).on('resize', function(){
+            var currentCenter = mymap.getCenter();
+            google.mpas.event.trigger(mymap, 'resize');
+            map.setCenter(currentCenter);
+          });
+          //mymap.addListener(mymap, 'idle', function(){
+            //mymap.trigger(mymap, 'resize')
+          //});
+        
+          $.each(stations, function(i,v){
+            var targetID = v.id;
+            
+            function findById(array, id) {
+  
+              return array.find(function(obj) {
+                // coerce both obj.id and id to numbers 
+                // for val & type comparison
+                return +obj.id === +id;
+              });
+            }
+            
+            var result = findById(stationStats.stationBeanList, targetID);
+            
+            
+            var contentString = "<h2>" + v.address  + "</h2>" +'<p>Docks in service: </p>' + v.docks_in_service +'<p>Docks available:</p>' + result.availableDocks;
+            
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+    
+            var marker = new google.maps.Marker({
+              position: {lat: parseFloat(v.latitude), lng: parseFloat(v.longitude)},
+              map: mymap,
+              title: 'Uluru (Ayers Rock)'
+              
+            });
+            
+            //marker.addListener('click', function() {
+            //  infowindow.open(mymap, marker);
+            //});
+           
+          });
+      };
+   };
+   
+   // var currentStation = {};    
+    
+      var db = new Dexie('Station');
+
+        	db.version(1).stores({
+        		stations: 'id, address, status, docks_in_service'
+        	});
+ 
+        	db.open().catch(function(error) {
+        		alert('Uh oh : ' + error);
+        	});  
+        	
+   function displayResults(stations, stationStats) {
+        
+        $.each(stations, function(i,v){
+          var targetID = v.id;
+          var stationLatitude = v.latitude;
+          var stationLongitude = v.longitude;
+            
+            function findById(array, id) {
+  
+              return array.find(function(obj) {
+                // coerce both obj.id and id to numbers 
+                // for val & type comparison
+                return +obj.id === +id;
+              });
+            }
+            
+            
+            var radlat1 = Math.PI * geolatitude/180;
+            var radlat2 = Math.PI * stationLatitude/180;
+            var theta = geolongitude-stationLongitude;
+            var radtheta = Math.PI * theta/180;
+            var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+            dist = Math.acos(dist);
+            dist = dist * 180/Math.PI;
+            dist = dist * 60 * 1.1515;
+            dist = Math.round(dist * 100) / 100;
+            
+            
+            var result = findById(stationStats.stationBeanList, targetID);
+            
+            var clone = $("#template").clone().removeClass("hidden").attr("id", v.id);
+            
+            clone.find(".mdc-card__title").text(v.address);
+            clone.find(".mdc-card__supporting-text").html('<p>Docks in service: '+v.docks_in_service+'</p>' +'<p>Docks available: '+result.availableDocks + '</p>'+'<p>Distance: '+ dist + ' miles' + '</p>');
+           
+            $("#results").append(clone);
+            
+            
+            $("#makeFavorite", clone).attr("id", v.id)
+            $(clone).on('click' , function(){
+              db.stations.add({
+        		  id: v.id,
+        		  address: v.address,
+        		  docks_in_service:v.docks_in_service
+        	  });
+            });
+           });
+           
+        };
+          
+     
+        	
+    $("#makeFavorite").on("click", function() {
+     
+
+  });    	
+  </script>
+  <script>
+    if('serviceWorker' in navigator) {
+      navigator.serviceWorker
+               .register('./sw.js', {scope:'./'})
+               .then(function() { console.log("Service Worker Registered"); });
+    }
+  </script>
+  <!-- Google Maps API
+    ================================================== -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACkxkL_yfHFnuDnysPVRzE4BZim4aGoHQ">
+    </script>
+</body>
+</html>
