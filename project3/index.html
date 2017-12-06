@@ -193,17 +193,21 @@
     
       function initMap(response) {
           
-          count=0;
           
           var chicago = {lat: parseFloat(response[0].latitude), lng: parseFloat(response[0].longitude)};  
           
-          //$("#mapScreen").show();
-          //console.log("before mymap");
+          $("#mapScreen").show();
+         
           
           var mymap = new google.maps.Map(document.getElementById('map'), {
           zoom: 10,
           center: chicago
           });
+          
+          mymap.addListener(mymap, 'idle', function(){
+          mymap.trigger(mymap, 'resize')
+          });
+        
         
           $.each(response, function(i,v){
             
@@ -224,9 +228,9 @@
             marker.addListener('click', function() {
               infowindow.open(mymap, marker);
             });
-            count=count+1;
+            
           });
-        $("#count2").append(count + " Inspections Returned");;
+       
       };       
       
       function displayResults(response) {
