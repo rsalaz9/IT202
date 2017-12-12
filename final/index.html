@@ -79,7 +79,7 @@
     </div>
   </div>
   <div class="screen mdc-toolbar-fixed-adjust" id="screen2">
-    <div style="height:550px" id="map"></div>
+    <div style="height:400px" id="map"></div>
   </div>
   <div class="screen mdc-toolbar-fixed-adjust shrine-products" id="screen3">
     <div class="demo-theme__text-styles demo-theme--custom-light-bg">
@@ -196,11 +196,11 @@
           center: chicago
           });
           
-          $(window).on('resize', function(){
-            var currentCenter = mymap.getCenter();
-            google.mpas.event.trigger(mymap, 'resize');
-            map.setCenter(currentCenter);
-          });
+          //$(window).on('resize', function(){
+            //var currentCenter = mymap.getCenter();
+            //google.mpas.event.trigger(mymap, 'resize');
+            //map.setCenter(currentCenter);
+          //});
           mymap.addListener(mymap, 'idle', function(){
             mymap.trigger(mymap, 'resize')
           });
@@ -230,7 +230,6 @@
               position: {lat: parseFloat(v.latitude), lng: parseFloat(v.longitude)},
               map: mymap,
               title: 'Uluru (Ayers Rock)'
-              
             });
             
             marker.addListener('click', function() {
